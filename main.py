@@ -92,6 +92,7 @@ class Window(QMainWindow):
         fname = QFileDialog.getOpenFileName(
             self, '打开文件', ".", "All Files (*);;Text Files (*.txt);;Lrc Files (*.lrc)")
         if fname[0]:
+            decoded = False
             for enc in ['utf-8-sig', 'utf-8', 'utf-16-le', 'gbk']:
                 try:
                     with open(fname[0], 'r', encoding=enc) as f:
