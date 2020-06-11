@@ -47,7 +47,7 @@ class Window(QMainWindow):
         self.action_LRC.triggered.connect(self.originLrcSave) # 导出原文LRC
         self.action_out_LRC2.triggered.connect(self.translateLrcSave) # 导出翻译LRC
         self.action_VtuberMusic.triggered.connect(self.about) # 关于
-        self.action_LRC_4.triggered.connect(self.output2mixlrc) # 导出双语LRC
+        self.action_LRC_5.triggered.connect(self.output2mixlrc) # 导出双语LRC
 
         # 按钮项操作
         self.toolButton.clicked.connect(lambda: self.impotLrc(0))  # 导入LRC到原歌词
