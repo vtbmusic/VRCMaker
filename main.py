@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-  
+# -*- coding: utf-8 -*-
 import sys
 import re
 import json
@@ -16,7 +16,7 @@ class Window(QMainWindow):
         super().__init__()
         self.setFixedSize(800, 600)
         self.set_ui()
-    
+
     def closeEvent(self, event):
         """
         重写closeEvent方法，实现dialog窗体关闭时执行一些代码
@@ -38,43 +38,46 @@ class Window(QMainWindow):
         print(dir(self))
 
         # 菜单项操作
-        self.action_4.triggered.connect(self.close) # 退出
-        self.action_VRC_3.triggered.connect(self.impotVrc) # 导入VRC
-        self.action_LRC_2.triggered.connect(lambda: self.impotLrc(0)) # 导入歌词到原文
-        self.action_LRC_3.triggered.connect(lambda: self.impotLrc(2)) # 导入歌词到翻译
-        self.action_LRC_4.triggered.connect(self.impotMixLrc) # 导入双语LRC
-        self.action_VRC_2.triggered.connect(self.vrcSave) # 导出VRC
-        self.action_LRC.triggered.connect(self.originLrcSave) # 导出原文LRC
-        self.action_out_LRC2.triggered.connect(self.translateLrcSave) # 导出翻译LRC
-        self.action_VtuberMusic.triggered.connect(self.about) # 关于
-        self.action_LRC_5.triggered.connect(self.output2mixlrc) # 导出双语LRC
+        self.action_4.triggered.connect(self.close)  # 退出
+        self.action_VRC_3.triggered.connect(self.impotVrc)  # 导入VRC
+        self.action_LRC_2.triggered.connect(
+            lambda: self.impotLrc(0))  # 导入歌词到原文
+        self.action_LRC_3.triggered.connect(
+            lambda: self.impotLrc(2))  # 导入歌词到翻译
+        self.action_LRC_4.triggered.connect(self.impotMixLrc)  # 导入双语LRC
+        self.action_VRC_2.triggered.connect(self.vrcSave)  # 导出VRC
+        self.action_LRC.triggered.connect(self.originLrcSave)  # 导出原文LRC
+        self.action_out_LRC2.triggered.connect(
+            self.translateLrcSave)  # 导出翻译LRC
+        self.action_VtuberMusic.triggered.connect(self.about)  # 关于
+        self.action_LRC_5.triggered.connect(self.output2mixlrc)  # 导出双语LRC
 
         # 按钮项操作
         self.toolButton.clicked.connect(lambda: self.impotLrc(0))  # 导入LRC到原歌词
         self.toolButton_2.clicked.connect(
             lambda: self.impotLrc(2))  # 导入LRC到翻译歌词
         self.toolButton_9.clicked.connect(self.impotVrc)  # 导入VRC
-        self.toolButton_3.clicked.connect(self.impotMixLrc) # 导入双语LRC
-        self.toolButton_7.clicked.connect(self.vrcSave) # 导出VRC
-        self.toolButton_8.clicked.connect(self.originLrcSave) # 导出原文LRC
-        self.toolButton_11.clicked.connect(self.translateLrcSave) # 导出翻译LRC
-        self.toolButton_12.clicked.connect(self.impotNetease) # 抓取网易云音乐歌词
-        self.toolButton_10.clicked.connect(self.output2mixlrc) # 导出双语LRC
+        self.toolButton_3.clicked.connect(self.impotMixLrc)  # 导入双语LRC
+        self.toolButton_7.clicked.connect(self.vrcSave)  # 导出VRC
+        self.toolButton_8.clicked.connect(self.originLrcSave)  # 导出原文LRC
+        self.toolButton_11.clicked.connect(self.translateLrcSave)  # 导出翻译LRC
+        self.toolButton_12.clicked.connect(self.impotNetease)  # 抓取网易云音乐歌词
+        self.toolButton_10.clicked.connect(self.output2mixlrc)  # 导出双语LRC
 
     # 关于
     def about(self):
         text = "VRC Maker 是由我们研发的自用歌词工具，\n同时支持LRC和我们(VtuberMusic开发组)自用的VRC格式歌词的导出。\n\n开发：\nKurokitu\nLovEver\n协力/图标：\nbyoukinn"
 
         QMessageBox.information(self, '关于', text, QMessageBox.Yes)
-        
 
     # 导入网易云音乐歌词
+
     def impotNetease(self):
         num, ok = QInputDialog.getText(self, '抓取网易云音乐歌词', '输入网易云音乐歌曲链接或ID：')
         if ok and num:
             try:
                 data = getNCMLyric(num)
-            
+
                 if(data['lrc']['lyric']):
                     ori = data['lrc']['lyric']
                     trans = data['tlyric']['lyric']
@@ -84,7 +87,8 @@ class Window(QMainWindow):
                     self.textEdit.setText(ori)
                     self.textEdit_2.setText(trans)
             except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
-                QMessageBox.warning(self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
+                QMessageBox.warning(
+                    self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
                 pass
 
     # 尝试用不同编码打开文件，返回成功状态和文件内容
@@ -100,7 +104,8 @@ class Window(QMainWindow):
                     decoded = True
                     break
                 except OSError:
-                    QMessageBox.warning(self, '提示', '导入失败, 发生错误', QMessageBox.Cancel)
+                    QMessageBox.warning(
+                        self, '提示', '导入失败, 发生错误', QMessageBox.Cancel)
                     return False, None
                 except UnicodeDecodeError:
                     pass
@@ -123,14 +128,19 @@ class Window(QMainWindow):
 
     # 打开VRC文件
     def impotVrc(self):
-        success, data = self.openFile()
-        if success:
-            data = json.loads(data)
-            self.textEdit.setText(data["origin"]["text"])
-            if(data["translated"] == True):
-                self.textEdit_2.setText(data["translate"]["text"])
-            else:
-                self.textEdit_2.setText("")
+        try:
+            success, data = self.openFile()
+            if success:
+                data = json.loads(data)
+                self.textEdit.setText(data["origin"]["text"])
+                if(data["translated"] == True):
+                    self.textEdit_2.setText(data["translate"]["text"])
+                else:
+                    self.textEdit_2.setText("")
+        except (json.decoder.JSONDecodeError):
+            QMessageBox.information(
+                self, '提示', '打开的不是标准的VRC格式文件', QMessageBox.Cancel)
+            pass
 
     # 导入双语LRC文件
     def impotMixLrc(self):
@@ -144,7 +154,8 @@ class Window(QMainWindow):
     def vrcSave(self):
         try:
             if(len(self.textEdit.toPlainText()) < 1):
-                    QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
+                QMessageBox.information(
+                    self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
             else:
                 filename = QFileDialog.getSaveFileName(
                     self, '保存', '.', "Vrc Files (*.vrc);;All Files (*)")
@@ -157,8 +168,8 @@ class Window(QMainWindow):
                     'scrollDisabled': False,
                 }
 
-                with open(filename[0], 'w', encoding = 'utf-8') as f:
-                    
+                with open(filename[0], 'w', encoding='utf-8') as f:
+
                     if(len(translate) < 1):
                         vrc_obj["translated"] = False
                         vrc_obj["origin"] = {}
@@ -174,9 +185,11 @@ class Window(QMainWindow):
                         vrc_obj["translate"]["text"] = translate
                     state = json.dump(vrc_obj, f, ensure_ascii=False, indent=2)
                     if(state == None):
-                        QMessageBox.information(self, '提示', '导出成功', QMessageBox.Cancel)
+                        QMessageBox.information(
+                            self, '提示', '导出成功', QMessageBox.Cancel)
                     else:
-                        QMessageBox.warning(self, '提示', '导出失败', QMessageBox.Cancel)
+                        QMessageBox.warning(
+                            self, '提示', '导出失败', QMessageBox.Cancel)
         except FileNotFoundError:
             pass
 
@@ -187,12 +200,13 @@ class Window(QMainWindow):
 
             if(len(origin) > 0):
                 filename = QFileDialog.getSaveFileName(
-                self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
-                with open(filename[0], 'w', encoding = 'utf-8') as f:
+                    self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
+                with open(filename[0], 'w', encoding='utf-8') as f:
                     f.write(origin)
                     f.close()
             else:
-                QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
+                QMessageBox.information(
+                    self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
         except FileNotFoundError:
             pass
 
@@ -203,12 +217,13 @@ class Window(QMainWindow):
 
             if(len(translate) > 0):
                 filename = QFileDialog.getSaveFileName(
-                self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
-                with open(filename[0], 'w', encoding = 'utf-8') as f:
+                    self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
+                with open(filename[0], 'w', encoding='utf-8') as f:
                     f.write(translate)
                     f.close()
             else:
-                QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
+                QMessageBox.information(
+                    self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
         except FileNotFoundError:
             pass
 
@@ -221,18 +236,16 @@ class Window(QMainWindow):
                 newdata = lrcs2mixlrc(origin, translate)
 
                 filename = QFileDialog.getSaveFileName(
-                self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
-                with open(filename[0], 'w', encoding = 'utf-8') as f:
+                    self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
+                with open(filename[0], 'w', encoding='utf-8') as f:
                     f.write(newdata)
                     f.close()
             else:
-                QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
+                QMessageBox.information(
+                    self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
         except FileNotFoundError:
             pass
-        
 
-        
-            
 
 if __name__ == "__main__":
     # for i in range(10):
