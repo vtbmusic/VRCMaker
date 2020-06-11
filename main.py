@@ -7,7 +7,7 @@ from PyQt5.Qt import *
 from PyQt5 import QtWidgets, QtGui, QtMultimedia
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
-from function.LyricConvert.convert import mixlrc2vrc
+from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
 from function.LyricConvert.fixaxis import fixlrcs
 
 
@@ -47,6 +47,7 @@ class Window(QMainWindow):
         self.action_LRC.triggered.connect(self.originLrcSave) # 导出原文LRC
         self.action_out_LRC2.triggered.connect(self.translateLrcSave) # 导出翻译LRC
         self.action_VtuberMusic.triggered.connect(self.about) # 关于
+        self.action_LRC5.triggered.connect(self.output2mixlrc) # 导出双语LRC
 
         # 按钮项操作
         self.toolButton.clicked.connect(lambda: self.impotLrc(0))  # 导入LRC到原歌词
@@ -58,6 +59,7 @@ class Window(QMainWindow):
         self.toolButton_8.clicked.connect(self.originLrcSave) # 导出原文LRC
         self.toolButton_11.clicked.connect(self.translateLrcSave) # 导出翻译LRC
         self.toolButton_12.clicked.connect(self.impotNetease) # 抓取网易云音乐歌词
+        self.toolButton_10.clicked.connect(self.output2mixlrc) # 导出双语LRC
 
     # 关于
     def about(self):
@@ -206,6 +208,26 @@ class Window(QMainWindow):
                 QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
         except FileNotFoundError:
             pass
+
+    # 导出双语LRC
+    def output2mixlrc(self):
+        try:
+            origin = self.textEdit.toPlainText()
+            translate = self.textEdit_2.toPlainText()
+            if(len(origin) > 0 and len(translate) > 0):
+                newdata = lrcs2mixlrc(origin, translate)
+
+                filename = QFileDialog.getSaveFileName(
+                self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
+                with open(filename[0], 'w', encoding = 'utf-8') as f:
+                    f.write(newdata)
+                    f.close()
+            else:
+                QMessageBox.information(self, '提示', '无法导出，内容为空', QMessageBox.Cancel)
+        except FileNotFoundError:
+            pass
+        
+
         
             
 
