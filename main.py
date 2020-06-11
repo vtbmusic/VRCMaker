@@ -7,7 +7,8 @@ from PyQt5.Qt import *
 from PyQt5 import QtWidgets, QtGui, QtMultimedia
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
-from function.LyricConvert.split import convert
+from function.LyricConvert.convert import mixlrc2vrc
+
 
 class Window(QMainWindow):
     def __init__(self):
@@ -81,64 +82,55 @@ class Window(QMainWindow):
                 QMessageBox.warning(self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
                 pass
 
-    # 打开LRC文件
-    def impotLrc(self, num):
+    # 尝试用不同编码打开文件，返回成功状态和文件内容
+    def openFile(self):
         fname = QFileDialog.getOpenFileName(
             self, '打开文件', ".", "All Files (*);;Text Files (*.txt);;Lrc Files (*.lrc)")
         if fname[0]:
-            for enc in ['utf-8-sig', 'utf8', 'utf-16-le', 'gbk', 'ANSI']:
+            for enc in ['utf-8-sig', 'utf-8', 'utf-16-le', 'gbk']:
                 try:
                     with open(fname[0], 'r', encoding=enc) as f:
                         data = f.read()
-                        if(num != 2):
-                            self.textEdit.setText(data)
-                        else:
-                            self.textEdit_2.setText(data)
                     decoded = True
+                    break
                 except OSError:
                     QMessageBox.warning(self, '提示', '导入失败, 发生错误', QMessageBox.Cancel)
+                    return False, None
                 except UnicodeDecodeError:
                     pass
+            if not decoded:
+                QMessageBox.warning(self, '提示', '编码格式不支持', QMessageBox.Cancel)
+                return False, None
+            else:
+                return True, data
+
+    # 打开LRC文件
+    def impotLrc(self, num):
+        success, data = self.openFile()
+        if success:
+            if(num != 2):
+                self.textEdit.setText(data)
+            else:
+                self.textEdit_2.setText(data)
 
     # 打开VRC文件
     def impotVrc(self):
-        fname = QFileDialog.getOpenFileName(
-            self, '打开文件', ".", "Vrc Files (*.vrc);;All Files (*)")
-        if fname[0]:
-            for enc in ['utf-8-sig', 'utf8', 'utf-16-le', 'gbk', 'ANSI']:
-                try:
-                    with open(fname[0], 'r', encoding=enc) as f:
-                        data = json.load(f)
-
-                        self.textEdit.setText(data["origin"]["text"])
-                        if(data["translated"] == True):
-                            self.textEdit_2.setText(data["translate"]["text"])
-                        else:
-                            self.textEdit_2.setText("")
-                except (UnicodeDecodeError, json.decoder.JSONDecodeError, OSError, UnboundLocalError):
-                    #QMessageBox.warning(self, '提示', '导入失败, 发生错误', QMessageBox.Cancel)
-                    pass
+        success, data = self.openFile()
+        if success:
+            data = json.loads(data)
+            self.textEdit.setText(data["origin"]["text"])
+            if(data["translated"] == True):
+                self.textEdit_2.setText(data["translate"]["text"])
+            else:
+                self.textEdit_2.setText("")
 
     # 导入双语LRC文件
     def impotMixLrc(self):
-        fname = QFileDialog.getOpenFileName(
-            self, '打开文件', ".", "All Files (*);;Text Files (*.txt);;Lrc Files (*.lrc)")
-        if fname[0]:
-            for enc in ['utf-8-sig', 'utf8', 'utf-16-le', 'gbk', 'ANSI']:
-                try:
-                    with open(fname[0], 'r', encoding=enc) as f:
-                        data = f.read()
-
-                        newobj = convert(data)
-
-                        self.textEdit.setText(newobj["origin"]["text"])
-                        self.textEdit_2.setText(newobj["translate"]["text"])
-
-                    decoded = True
-                except OSError:
-                    QMessageBox.warning(self, '提示', '导入失败, 发生错误', QMessageBox.Cancel)
-                except UnicodeDecodeError:
-                    pass
+        success, data = self.openFile()
+        if success:
+            data = mixlrc2vrc(data)
+            self.textEdit.setText(data["origin"]["text"])
+            self.textEdit_2.setText(data["translate"]["text"])
 
     # 导出VRC
     def vrcSave(self):
