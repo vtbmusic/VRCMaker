@@ -1,4 +1,2 @@
 #/bin/bash
-pyinstaller --hidden-import=queue -w -F -i assets/icon/main.ico main.py
-
-cp -r ./assets ./dist/
+python -OO -m PyInstaller --hidden-import=queue -w -F -i assets/icon/main.ico main.py --add-data "assets;assets"

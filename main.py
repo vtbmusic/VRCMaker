@@ -3,6 +3,7 @@
 import sys
 import re
 import json
+import time
 from PyQt5.Qt import *
 from PyQt5 import QtWidgets, QtGui, QtMultimedia
 from PyQt5.uic import loadUi
@@ -11,11 +12,34 @@ from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
 from function.LyricConvert.fixaxis import fixlrcs
 
 
+def NopenArgv(data):
+    if (data):
+        decoded = False
+        for enc in ['utf-8-sig', 'utf-8', 'utf-16-le', 'gbk']:
+            try:
+                with open(data, 'r', encoding=enc) as f:
+                    data = f.read()
+                decoded = True
+                break
+            except OSError:
+                return False, None
+            except UnicodeDecodeError:
+                pass
+        if not decoded:
+            return False, None
+        else:
+            return True, data
+    else:
+        return False, None
+
+
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setFixedSize(800, 600)
         self.set_ui()
+
+        self.loadargv()
 
     def closeEvent(self, event):
         """
@@ -34,8 +58,10 @@ class Window(QMainWindow):
             event.ignore()
 
     def set_ui(self):
-        loadUi('assets/index.ui', self)
-        print(dir(self))
+        if len(sys.argv) > 1 and sys.argv[1] == '-t':
+            loadUi('assets/index.ui', self)
+        else:
+            loadUi(sys.path[1] + '/assets/index.ui', self)
 
         # 菜单项操作
         self.action_4.triggered.connect(self.close)  # 退出
@@ -63,6 +89,23 @@ class Window(QMainWindow):
         self.toolButton_11.clicked.connect(self.translateLrcSave)  # 导出翻译LRC
         self.toolButton_12.clicked.connect(self.impotNetease)  # 抓取网易云音乐歌词
         self.toolButton_10.clicked.connect(self.output2mixlrc)  # 导出双语LRC
+
+    # 双击路径导入
+    def loadargv(self):
+        if len(sys.argv) > 1 and sys.argv[1] != '-t':
+            try:
+                success, data = NopenArgv(sys.argv[1])
+                if success:
+                    data = json.loads(data)
+                    self.textEdit.setText(data["origin"]["text"])
+                    if(data["translated"] == True):
+                        self.textEdit_2.setText(data["translate"]["text"])
+                    else:
+                        self.textEdit_2.setText("")
+            except (json.decoder.JSONDecodeError):
+                QMessageBox.information(
+                    self, '提示', '打开的不是标准的VRC格式文件', QMessageBox.Cancel)
+                pass
 
     # 关于
     def about(self):
@@ -254,21 +297,31 @@ class Window(QMainWindow):
 
 
 if __name__ == "__main__":
-    # for i in range(10):
-    #     time.sleep(1)
 
-    app = QApplication(sys.argv)
+    new = []
+    new.append(sys.argv[0])
+
+    app = QApplication(new)
 
     # 创建启动界面，支持png透明图片
-    splash = QtWidgets.QSplashScreen(QtGui.QPixmap('assets/images/splash.png'))
+    if len(sys.argv) > 1 and sys.argv[1] == '-t':
+        splash = QtWidgets.QSplashScreen(
+            QtGui.QPixmap('assets/images/splash.png'))
+
+    else:
+        splash = QtWidgets.QSplashScreen(
+            QtGui.QPixmap(sys.path[1] + '/assets/images/splash.png'))
     splash.show()
 
     # 可以显示启动信息
     splash.showMessage('正在加载……')
+
+    time.sleep(1)
 
     # 关闭启动画面
     splash.close()
 
     window = Window()
     window.show()
+
     sys.exit(app.exec_())
