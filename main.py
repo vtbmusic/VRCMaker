@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets, QtGui, QtMultimedia
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
 from function.LyricConvert.convert import mixlrc2vrc
+from function.LyricConvert.fixaxis import fixlrcs
 
 
 class Window(QMainWindow):
@@ -73,11 +74,13 @@ class Window(QMainWindow):
                 data = getNCMLyric(num)
             
                 if(data['lrc']['lyric']):
-                        ori = data['lrc']['lyric']
-                        trans = data['tlyric']['lyric']
+                    ori = data['lrc']['lyric']
+                    trans = data['tlyric']['lyric']
 
-                        self.textEdit.setText(ori)
-                        self.textEdit_2.setText(trans)
+                    ori, trans = fixlrcs(ori, trans)
+
+                    self.textEdit.setText(ori)
+                    self.textEdit_2.setText(trans)
             except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
                 QMessageBox.warning(self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
                 pass
