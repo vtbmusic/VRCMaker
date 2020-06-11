@@ -285,6 +285,7 @@
      <addaction name="action_VRC_2"/>
      <addaction name="action_LRC"/>
      <addaction name="action_out_LRC2"/>
+     <addaction name="action_LRC_5"/>
     </widget>
     <widget class="QMenu" name="menu_4">
      <property name="title">
@@ -353,6 +354,11 @@
   <action name="action_out_LRC2">
    <property name="text">
     <string>导出翻译LRC</string>
+   </property>
+  </action>
+  <action name="action_LRC_5">
+   <property name="text">
+    <string>导出双语LRC</string>
    </property>
   </action>
  </widget>
