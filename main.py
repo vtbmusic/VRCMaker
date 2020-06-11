@@ -108,6 +108,8 @@ class Window(QMainWindow):
                 return False, None
             else:
                 return True, data
+        else:
+            return False, None
 
     # 打开LRC文件
     def impotLrc(self, num):
