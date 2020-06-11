@@ -1,58 +1,13 @@
 #!/usr/bin/python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-  
 import sys
 import re
 import json
-import requests
 from PyQt5.Qt import *
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtMultimedia
 from PyQt5.uic import loadUi
-
-NCMLyricApi = 'http://music.163.com/api/song/lyric?lv=-1&tv=-1&id='
-headers = {
-    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360SE'
-}
-
-
-def getNCMLyric(data):
-    isUrl = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', data)
-
-    try:
-        if(isUrl[0] == "http://music.163.com" or isUrl[0] == "https://music.163.com"):
-            pattern = re.compile(r"^http[s]?://.*[^\w]+id=(\d*).*")
-            matches = pattern.findall(data)
-            id = matches[0]
-            res = json.loads(requests.get(url=NCMLyricApi + id, headers=headers).text)
-        else:
-            res = json.loads(requests.get(url=NCMLyricApi + data, headers=headers).text)
-        return res
-    except IndexError:
-        pass
-
-def convert(ori_txt):
-    vrc_obj = {
-        'karaoke': False,
-        'scrollDisabled': False,
-        'origin': {
-            'version': 2,
-            'text': ''
-        },
-        'translate': {
-            'version': 2,
-            'text': ''
-        }
-    }
-
-    pattern = re.compile(r'(\[.*?\])\s*([^\[\]]*)\s*')
-    matches = pattern.findall(ori_txt)
-    for time_stamp, lrc in matches:
-        lrc = lrc.strip().split('\n')
-        vrc_obj['origin']['text'] += time_stamp + lrc[0] + '\n'
-        if len(lrc) > 1:
-            vrc_obj['translate']['text'] += time_stamp + lrc[1] + '\n'
-
-    return vrc_obj
-
+from function.NetEase.Lyric import getNCMLyric
+from function.LyricConvert.split import convert
 
 class Window(QMainWindow):
     def __init__(self):
@@ -107,6 +62,7 @@ class Window(QMainWindow):
         text = "VRC Maker 是由我们研发的自用歌词工具，\n同时支持LRC和我们(VtuberMusic开发组)自用的VRC格式歌词的导出。\n\n开发：\nKurokitu\nLovEver\n协力/图标：\nbyoukinn"
 
         QMessageBox.information(self, '关于', text, QMessageBox.Yes)
+        
 
     # 导入网易云音乐歌词
     def impotNetease(self):
@@ -130,7 +86,7 @@ class Window(QMainWindow):
         fname = QFileDialog.getOpenFileName(
             self, '打开文件', ".", "All Files (*);;Text Files (*.txt);;Lrc Files (*.lrc)")
         if fname[0]:
-            for enc in ['utf8', 'utf-16-le', 'gbk', 'ANSI', 'utf-8-sig']:
+            for enc in ['utf-8-sig', 'utf8', 'utf-16-le', 'gbk', 'ANSI']:
                 try:
                     with open(fname[0], 'r', encoding=enc) as f:
                         data = f.read()
@@ -259,6 +215,9 @@ class Window(QMainWindow):
             
 
 if __name__ == "__main__":
+    # for i in range(10):
+    #     time.sleep(1)
+
     app = QApplication(sys.argv)
 
     # 创建启动界面，支持png透明图片
