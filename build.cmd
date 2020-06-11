@@ -1,3 +1,2 @@
-pyinstaller --hidden-import=queue -w -i assets/icon/main.ico main.py
-
-xcopy assets dist\main\assets\ /e
+@echo off
+python -OO -m PyInstaller --hidden-import=missingmodule -w -i assets/icon/main.ico main.py --add-data "assets;assets"

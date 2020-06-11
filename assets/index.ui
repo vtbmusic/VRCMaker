@@ -19,7 +19,7 @@
     <normaloff>icon/logo_mid.png</normaloff>icon/logo_mid.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">font: 25 9pt &quot;Microsoft YaHei, PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
+   <string notr="true">font: 25 9pt &quot;Microsoft YaHei UI, Microsoft YaHei, PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextEdit" name="textEdit">
@@ -31,6 +31,9 @@
       <height>371</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">font: 25 9pt &quot;PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
+    </property>
    </widget>
    <widget class="QTextEdit" name="textEdit_2">
     <property name="geometry">
@@ -40,6 +43,9 @@
       <width>371</width>
       <height>371</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 25 9pt &quot;PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
