@@ -4,8 +4,8 @@ import sys
 import re
 import json
 import time
-from PyQt5.Qt import *
-from PyQt5 import QtWidgets, QtGui, QtMultimedia
+from PyQt5.Qt import QMainWindow, QApplication, QMessageBox, QInputDialog, QFileDialog
+from PyQt5 import QtWidgets, QtGui, QtMultimedia, QtCore
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
 from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     splash.show()
 
     # 可以显示启动信息
-    splash.showMessage('正在加载……')
+    splash.showMessage("启动中...", QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom, QtCore.Qt.white)
 
     time.sleep(1)
 

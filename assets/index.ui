@@ -11,6 +11,15 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Microsoft YaHei UI, Microsoft YaHei, PingFangSC-Regular, sans-serif, SimHei</family>
+    <pointsize>10</pointsize>
+    <weight>9</weight>
+    <italic>false</italic>
+    <bold>false</bold>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>VRC Maker</string>
   </property>
@@ -19,7 +28,7 @@
     <normaloff>icon/logo_mid.png</normaloff>icon/logo_mid.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">font: 25 9pt &quot;Microsoft YaHei UI, Microsoft YaHei, PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
+   <string notr="true">font: 75 10pt &quot;Microsoft YaHei UI, Microsoft YaHei, PingFangSC-Regular, sans-serif, SimHei&quot;;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextEdit" name="textEdit">
@@ -94,7 +103,7 @@
       <x>80</x>
       <y>150</y>
       <width>61</width>
-      <height>18</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -107,7 +116,7 @@
       <x>470</x>
       <y>150</y>
       <width>61</width>
-      <height>18</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -120,7 +129,7 @@
       <x>150</x>
       <y>150</y>
       <width>111</width>
-      <height>18</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -211,7 +220,7 @@
       <x>270</x>
       <y>150</y>
       <width>111</width>
-      <height>18</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -234,7 +243,7 @@
    <widget class="QToolButton" name="toolButton_10">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>670</x>
       <y>10</y>
       <width>111</width>
       <height>41</height>
@@ -247,7 +256,7 @@
    <widget class="QToolButton" name="toolButton_11">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>670</x>
       <y>60</y>
       <width>111</width>
       <height>41</height>
@@ -260,7 +269,7 @@
    <widget class="QToolButton" name="toolButton_12">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>430</x>
       <y>10</y>
       <width>111</width>
       <height>41</height>
@@ -277,7 +286,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
