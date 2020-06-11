@@ -78,10 +78,12 @@ class Window(QMainWindow):
             try:
                 data = getNCMLyric(num)
 
+                print(data)
+
                 if(data['lrc']['lyric']):
                     ori = data['lrc']['lyric']
 
-                    if 'lyric' in data['tlyric']:
+                    if 'lyric' in data['tlyric'] and data['tlyric']['lyric']:
                         trans = data['tlyric']['lyric']
                         ori, trans = fixlrcs(ori, trans)
                         self.textEdit_2.setText(trans)
