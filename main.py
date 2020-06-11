@@ -80,12 +80,16 @@ class Window(QMainWindow):
 
                 if(data['lrc']['lyric']):
                     ori = data['lrc']['lyric']
-                    trans = data['tlyric']['lyric']
 
-                    ori, trans = fixlrcs(ori, trans)
+                    if 'lyric' in data['tlyric']:
+                        trans = data['tlyric']['lyric']
+                        ori, trans = fixlrcs(ori, trans)
+                        self.textEdit_2.setText(trans)
+                    else:
+                        self.textEdit_2.setText("")
 
                     self.textEdit.setText(ori)
-                    self.textEdit_2.setText(trans)
+
             except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
                 QMessageBox.warning(
                     self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)

@@ -17,11 +17,13 @@ def getNCMLyric(data):
 
     try:
         if(isUrl[0][0]):
-            res = json.loads(requests.get(
-                url=NCMLyricApi + isUrl[0][1], headers=headers).text)
+            res = json.loads(requests.get(url=NCMLyricApi +
+                                          isUrl[0][1], headers=headers).text)
         else:
-            res = json.loads(requests.get(
-                url=NCMLyricApi + isUrl[0][2], headers=headers).text)
+            print("ID:" + isUrl[0][2])
+            res = json.loads(requests.get(url=NCMLyricApi +
+                                          isUrl[0][2], headers=headers).text)
+            print(res)
         return res
     except IndexError:
         pass
