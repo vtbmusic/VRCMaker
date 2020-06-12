@@ -40,15 +40,30 @@ class Window(QMainWindow):
         self.set_ui()
 
         self.loadargv()
+        self.textsoll(self.checkBox.checkState())
 
-        self.textEdit.horizontalScrollBar().valueChanged.connect(
-            self.textEdit_2.horizontalScrollBar().setValue)
-        self.textEdit.verticalScrollBar().valueChanged.connect(
-            self.textEdit_2.verticalScrollBar().setValue)
-        self.textEdit_2.horizontalScrollBar().valueChanged.connect(
-            self.textEdit.horizontalScrollBar().setValue)
-        self.textEdit_2.verticalScrollBar().valueChanged.connect(
-            self.textEdit.verticalScrollBar().setValue)
+        self.checkBox.stateChanged.connect(
+            lambda: self.textsoll(self.checkBox.checkState()))
+
+    def textsoll(self, num):
+        if num == 2:
+            self.textEdit.horizontalScrollBar().valueChanged.connect(
+                self.textEdit_2.horizontalScrollBar().setValue)
+            self.textEdit.verticalScrollBar().valueChanged.connect(
+                self.textEdit_2.verticalScrollBar().setValue)
+            self.textEdit_2.horizontalScrollBar().valueChanged.connect(
+                self.textEdit.horizontalScrollBar().setValue)
+            self.textEdit_2.verticalScrollBar().valueChanged.connect(
+                self.textEdit.verticalScrollBar().setValue)
+        else:
+            self.textEdit.horizontalScrollBar().valueChanged.disconnect(
+                self.textEdit_2.horizontalScrollBar().setValue)
+            self.textEdit.verticalScrollBar().valueChanged.disconnect(
+                self.textEdit_2.verticalScrollBar().setValue)
+            self.textEdit_2.horizontalScrollBar().valueChanged.disconnect(
+                self.textEdit.horizontalScrollBar().setValue)
+            self.textEdit_2.verticalScrollBar().valueChanged.disconnect(
+                self.textEdit.verticalScrollBar().setValue)
 
     def closeEvent(self, event):
         """
