@@ -4,10 +4,12 @@ import sys
 import re
 import json
 import time
-from PyQt5.Qt import *
-from PyQt5 import QtWidgets, QtGui, QtMultimedia
+import base64
+from PyQt5.Qt import QMainWindow, QApplication, QMessageBox, QInputDialog, QFileDialog
+from PyQt5 import QtWidgets, QtGui, QtMultimedia, QtCore
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
+from function.QQMusic.Lyric import getQQMLyric
 from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
 from function.LyricConvert.fixaxis import fixlrcs
 
@@ -40,6 +42,30 @@ class Window(QMainWindow):
         self.set_ui()
 
         self.loadargv()
+        self.textsoll(self.checkBox.checkState())
+
+        self.checkBox.stateChanged.connect(
+            lambda: self.textsoll(self.checkBox.checkState()))
+
+    def textsoll(self, num):
+        if num == 2:
+            self.textEdit.horizontalScrollBar().valueChanged.connect(
+                self.textEdit_2.horizontalScrollBar().setValue)
+            self.textEdit.verticalScrollBar().valueChanged.connect(
+                self.textEdit_2.verticalScrollBar().setValue)
+            self.textEdit_2.horizontalScrollBar().valueChanged.connect(
+                self.textEdit.horizontalScrollBar().setValue)
+            self.textEdit_2.verticalScrollBar().valueChanged.connect(
+                self.textEdit.verticalScrollBar().setValue)
+        else:
+            self.textEdit.horizontalScrollBar().valueChanged.disconnect(
+                self.textEdit_2.horizontalScrollBar().setValue)
+            self.textEdit.verticalScrollBar().valueChanged.disconnect(
+                self.textEdit_2.verticalScrollBar().setValue)
+            self.textEdit_2.horizontalScrollBar().valueChanged.disconnect(
+                self.textEdit.horizontalScrollBar().setValue)
+            self.textEdit_2.verticalScrollBar().valueChanged.disconnect(
+                self.textEdit.verticalScrollBar().setValue)
 
     def closeEvent(self, event):
         """
@@ -89,6 +115,7 @@ class Window(QMainWindow):
         self.toolButton_11.clicked.connect(self.translateLrcSave)  # 导出翻译LRC
         self.toolButton_12.clicked.connect(self.impotNetease)  # 抓取网易云音乐歌词
         self.toolButton_10.clicked.connect(self.output2mixlrc)  # 导出双语LRC
+        self.toolButton_13.clicked.connect(self.impotQQMusic)  # 导入QQ音乐歌词
 
     # 双击路径导入
     def loadargv(self):
@@ -121,8 +148,6 @@ class Window(QMainWindow):
             try:
                 data = getNCMLyric(num)
 
-                print(data)
-
                 if(data['lrc']['lyric']):
                     ori = data['lrc']['lyric']
 
@@ -138,6 +163,31 @@ class Window(QMainWindow):
             except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
                 QMessageBox.warning(
                     self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
+                pass
+
+    # 导入QQ音乐歌词
+
+    def impotQQMusic(self):
+        num, ok = QInputDialog.getText(self, '抓取QQ音乐歌词', '输入QQ音乐歌曲链接：')
+        if ok and num:
+            try:
+                data = getQQMLyric(num)
+
+                if(data['lyric']):
+                    ori = base64.b64decode(data['lyric']).decode('utf8')
+
+                    if 'trans' in data and len(data['trans']) > 1:
+                        trans = base64.b64decode(data['trans']).decode('utf8')
+                        ori, trans = fixlrcs(ori, trans)
+                        self.textEdit_2.setText(trans)
+                    else:
+                        self.textEdit_2.setText("")
+
+                    self.textEdit.setText(ori)
+
+            except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
+                QMessageBox.warning(
+                    self, '提示', '获取QQ音乐歌词失败', QMessageBox.Cancel)
                 pass
 
     # 尝试用不同编码打开文件，返回成功状态和文件内容
@@ -314,7 +364,8 @@ if __name__ == "__main__":
     splash.show()
 
     # 可以显示启动信息
-    splash.showMessage('正在加载……')
+    splash.showMessage("启动中...", QtCore.Qt.AlignRight |
+                       QtCore.Qt.AlignBottom, QtCore.Qt.white)
 
     time.sleep(1)
 
