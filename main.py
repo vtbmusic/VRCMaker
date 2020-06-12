@@ -41,6 +41,15 @@ class Window(QMainWindow):
 
         self.loadargv()
 
+        self.textEdit.horizontalScrollBar().valueChanged.connect(
+            self.textEdit_2.horizontalScrollBar().setValue)
+        self.textEdit.verticalScrollBar().valueChanged.connect(
+            self.textEdit_2.verticalScrollBar().setValue)
+        self.textEdit_2.horizontalScrollBar().valueChanged.connect(
+            self.textEdit.horizontalScrollBar().setValue)
+        self.textEdit_2.verticalScrollBar().valueChanged.connect(
+            self.textEdit.verticalScrollBar().setValue)
+
     def closeEvent(self, event):
         """
         重写closeEvent方法，实现dialog窗体关闭时执行一些代码
@@ -314,7 +323,8 @@ if __name__ == "__main__":
     splash.show()
 
     # 可以显示启动信息
-    splash.showMessage("启动中...", QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom, QtCore.Qt.white)
+    splash.showMessage("启动中...", QtCore.Qt.AlignRight |
+                       QtCore.Qt.AlignBottom, QtCore.Qt.white)
 
     time.sleep(1)
 
