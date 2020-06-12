@@ -4,10 +4,12 @@ import sys
 import re
 import json
 import time
+import base64
 from PyQt5.Qt import QMainWindow, QApplication, QMessageBox, QInputDialog, QFileDialog
 from PyQt5 import QtWidgets, QtGui, QtMultimedia, QtCore
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
+from function.QQMusic.Lyric import getQQMLyric
 from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
 from function.LyricConvert.fixaxis import fixlrcs
 
@@ -113,6 +115,7 @@ class Window(QMainWindow):
         self.toolButton_11.clicked.connect(self.translateLrcSave)  # 导出翻译LRC
         self.toolButton_12.clicked.connect(self.impotNetease)  # 抓取网易云音乐歌词
         self.toolButton_10.clicked.connect(self.output2mixlrc)  # 导出双语LRC
+        self.toolButton_13.clicked.connect(self.impotQQMusic)  # 导入QQ音乐歌词
 
     # 双击路径导入
     def loadargv(self):
@@ -145,8 +148,6 @@ class Window(QMainWindow):
             try:
                 data = getNCMLyric(num)
 
-                print(data)
-
                 if(data['lrc']['lyric']):
                     ori = data['lrc']['lyric']
 
@@ -162,6 +163,31 @@ class Window(QMainWindow):
             except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
                 QMessageBox.warning(
                     self, '提示', '获取网易云歌词失败', QMessageBox.Cancel)
+                pass
+
+    # 导入QQ音乐歌词
+
+    def impotQQMusic(self):
+        num, ok = QInputDialog.getText(self, '抓取QQ音乐歌词', '输入QQ音乐歌曲链接：')
+        if ok and num:
+            try:
+                data = getQQMLyric(num)
+
+                if(data['lyric']):
+                    ori = base64.b64decode(data['lyric']).decode('utf8')
+
+                    if 'trans' in data and len(data['trans']) > 1:
+                        trans = base64.b64decode(data['trans']).decode('utf8')
+                        ori, trans = fixlrcs(ori, trans)
+                        self.textEdit_2.setText(trans)
+                    else:
+                        self.textEdit_2.setText("")
+
+                    self.textEdit.setText(ori)
+
+            except (UnicodeDecodeError, json.decoder.JSONDecodeError, KeyError, TypeError):
+                QMessageBox.warning(
+                    self, '提示', '获取QQ音乐歌词失败', QMessageBox.Cancel)
                 pass
 
     # 尝试用不同编码打开文件，返回成功状态和文件内容

@@ -23,7 +23,6 @@ def getNCMLyric(data):
             print("ID:" + isUrl[0][2])
             res = json.loads(requests.get(url=NCMLyricApi +
                                           isUrl[0][2], headers=headers).text)
-            print(res)
         return res
     except IndexError:
         pass
