@@ -193,7 +193,7 @@ class Window(QMainWindow):
     # 尝试用不同编码打开文件，返回成功状态和文件内容
     def openFile(self):
         fname = QFileDialog.getOpenFileName(
-            self, '打开文件', ".", "All Files (*);;Text Files (*.txt);;Lrc Files (*.lrc)")
+            self, '打开文件', ".", "All Files (*);;Vrc Files (*.vrc);;Text Files (*.txt);;Lrc Files (*.lrc);;Srt Files (*.srt);;Ass Files (*.ass)")
         if fname[0]:
             decoded = False
             for enc in ['utf-8-sig', 'utf-8', 'utf-16-le', 'gbk']:
