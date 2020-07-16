@@ -10,6 +10,7 @@ def mixlrc2vrc(ori_txt):
     vrc_obj = {
         'karaoke': False,
         'scrollDisabled': False,
+        'translated': True,  # mixlrc means translated is True
         'origin': {
             'version': 2,
             'text': ''
