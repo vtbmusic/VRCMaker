@@ -10,7 +10,7 @@ def mixlrc2vrc(ori_txt):
     vrc_obj = {
         'karaoke': False,
         'scrollDisabled': False,
-        'translated': True,  # mixlrc means translated is True
+        'translated': False,
         'origin': {
             'version': 2,
             'text': ''
@@ -25,6 +25,8 @@ def mixlrc2vrc(ori_txt):
     matches = pattern.findall(ori_txt)
     for time_stamp, lrc in matches:
         lrc = lrc.strip().split('\n')
+        if len(lrc) > 1:
+            vrc_obj['translated'] = True
         vrc_obj['origin']['text'] += time_stamp + lrc[0] + '\n'
         vrc_obj['translate']['text'] += time_stamp + (lrc[1] if len(lrc) > 1 else '') + '\n'
 
