@@ -125,7 +125,14 @@ class Window(QMainWindow):
                 if success:
                     data = json.loads(data)
                     self.textEdit.setText(data["origin"]["text"])
-                    if(data["translated"] == True):
+                    
+                    if "translated" not in data:
+                        if "translate" in data and data["translate"]["text"] != "":
+                            data["translated"] = True
+                        else:
+                            data["translated"] = False
+                    
+                    if data["translated"] == True:
                         self.textEdit_2.setText(data["translate"]["text"])
                     else:
                         self.textEdit_2.setText("")
