@@ -127,8 +127,8 @@ def ass2vrc(ass_txt):
             if len(text) < 2:
                 raise ConvertError('Fail to find translation in line {:d}'.format(idx))
             ori_txt, trans_txt = text[0], text[1]
-            vrc_obj['origin']['text'] += '[{}]{}'.format(start, ori_txt)
-            vrc_obj['translate']['text'] += '[{}]{}'.format(start, trans_txt)
+            vrc_obj['origin']['text'] += '[{}]{}\n'.format(start, ori_txt)
+            vrc_obj['translate']['text'] += '[{}]{}\n'.format(start, trans_txt)
     
     return vrc_obj
         
