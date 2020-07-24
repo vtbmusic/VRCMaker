@@ -10,7 +10,7 @@ from PyQt5 import QtWidgets, QtGui, QtMultimedia, QtCore
 from PyQt5.uic import loadUi
 from function.NetEase.Lyric import getNCMLyric
 from function.QQMusic.Lyric import getQQMLyric
-from function.LyricConvert.convert import mixlrc2vrc, lrcs2mixlrc
+from function.LyricConvert.convert import mlrc2vrc, lrcs2mlrc
 from function.LyricConvert.fixaxis import fixlrcs
 
 
@@ -252,7 +252,7 @@ class Window(QMainWindow):
     def impotMixLrc(self):
         success, data = self.openFile()
         if success:
-            data = mixlrc2vrc(data)
+            data = mlrc2vrc(data)
             self.textEdit.setText(data["origin"]["text"])
             self.textEdit_2.setText(data["translate"]["text"])
 
@@ -339,7 +339,7 @@ class Window(QMainWindow):
             origin = self.textEdit.toPlainText()
             translate = self.textEdit_2.toPlainText()
             if(len(origin) > 0 and len(translate) > 0):
-                newdata = lrcs2mixlrc(origin, translate)
+                newdata = lrcs2mlrc(origin, translate)
 
                 filename = QFileDialog.getSaveFileName(
                     self, '保存', '.', "Lrc Files (*.lrc);;Text Files (*.txt);;All Files (*)")
